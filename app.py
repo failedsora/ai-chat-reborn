@@ -1,13 +1,20 @@
 import json
 import urllib.request
 import traceback
+import os
 
-OPENROUTER_KEY = "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"
+OPENROUTER_KEY = os.environ.get("OPENROUTER_KEY")
 MODEL = "mistralai/mistral-nemo"
 
 def application(environ, start_response):
     try:
         length = int(environ.get("CONTENT_LENGTH") or 0)
+
+        if length == 0:
+            response_body = json.dumps({"error": "empty body"}).encode("utf-8")
+            start_response("400 Bad Request", [("Content-Type", "application/json")])
+            return [response_body]
+
         body = environ["wsgi.input"].read(length)
         data = json.loads(body)
         messages = data.get("messages", [])
@@ -40,6 +47,6 @@ def application(environ, start_response):
     except Exception as e:
         tb = traceback.format_exc()
         print("ERROR:", tb)
-        error_body = json.dumps({"error": str(e), "trace": tb}).encode("utf-8")
+        error_body = json.dumps({"error": str(e)}).encode("utf-8")
         start_response("500 Internal Server Error", [("Content-Type", "application/json")])
         return [error_body]

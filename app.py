@@ -1,5 +1,6 @@
 import json
 import urllib.request
+import traceback
 
 OPENROUTER_KEY = "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"
 MODEL = "mistralai/mistral-nemo"
@@ -22,7 +23,7 @@ def application(environ, start_response):
             headers={
                 "Authorization": f"Bearer {OPENROUTER_KEY}",
                 "Content-Type": "application/json",
-                "HTTP-Referer": "https://failedsora.pythonanywhere.com",
+                "HTTP-Referer": "https://ai-chat-reborn.onrender.com",
                 "X-Title": "AI Chat Reborn"
             },
             method="POST"
@@ -37,6 +38,8 @@ def application(environ, start_response):
         return [response_body]
 
     except Exception as e:
-        error_body = json.dumps({"error": str(e)}).encode("utf-8")
+        tb = traceback.format_exc()
+        print("ERROR:", tb)
+        error_body = json.dumps({"error": str(e), "trace": tb}).encode("utf-8")
         start_response("500 Internal Server Error", [("Content-Type", "application/json")])
         return [error_body]

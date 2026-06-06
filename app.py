@@ -2,7 +2,7 @@ import json
 import urllib.request
 import traceback
 
-OPENROUTER_KEY = "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"
+OPENROUTER_KEY = "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"
 MODEL = "mistralai/mistral-nemo"
 
 def application(environ, start_response):

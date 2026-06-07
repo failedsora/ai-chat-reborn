@@ -7,6 +7,12 @@ OPENROUTER_KEY = os.environ.get("OPENROUTER_KEY")
 MODEL = "mistralai/mistral-small-24b-instruct-2501"
 
 def application(environ, start_response):
+    path = environ.get("PATH_INFO", "")
+
+    if path == "/ping":
+        start_response("200 OK", [("Content-Type", "application/json")])
+        return [b'{"status":"alive"}']
+
     try:
         length = int(environ.get("CONTENT_LENGTH") or 0)
 
@@ -21,7 +27,10 @@ def application(environ, start_response):
 
         payload = json.dumps({
             "model": MODEL,
-            "messages": messages
+            "messages": messages,
+            "max_tokens": 150,
+            "temperature": 0.9,
+            "frequency_penalty": 1.2
         }).encode("utf-8")
 
         req = urllib.request.Request(

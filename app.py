@@ -4,7 +4,7 @@ import traceback
 import os
 
 OPENROUTER_KEY = os.environ.get("OPENROUTER_KEY")
-MODEL = "mistralai/mistral-nemo"
+MODEL = "mistralai/mistral-small-24b-instruct-2501"
 
 def application(environ, start_response):
     try:
